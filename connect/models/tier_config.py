@@ -5,6 +5,9 @@
 
 from typing import Optional, List
 
+from connect.logger import function_log
+from connect.models.schemas import TemplateSchema, TierAccountSchema, \
+    TierAccountsSchema, TierConfigSchema, TierConfigRequestSchema
 from .base import BaseModel
 from .company import User
 from .connection import Connection
@@ -13,8 +16,6 @@ from .event import Events
 from .marketplace import Activation
 from .parameters import Param
 from .product import Product
-from connect.models.schemas import TemplateSchema, TierAccountSchema, \
-    TierAccountsSchema, TierConfigSchema, TierConfigRequestSchema
 
 
 class TierAccount(BaseModel):
@@ -97,8 +98,7 @@ class TierConfig(BaseModel):
 
     @classmethod
     def get(cls, tier_id, product_id, config=None):
-        """
-        Gets the specified tier config data. For example, to get Tier 1 configuration data
+        """ Gets the specified tier config data. For example, to get Tier 1 configuration data
         for one request we can do: ::
 
             TierConfig.get(request.asset.tiers.tier1.id, request.asset.product.id)
@@ -186,3 +186,21 @@ class TierConfigRequest(BaseModel):
             return list(filter(lambda param: param.id == id_, self.params))[0]
         except IndexError:
             return None
+
+    @function_log
+    def update_parameters(self, config=None):
+        """ Updates the parameters of this request in the platform.
+
+        :param Config config: Configuration, or ``None`` to use the environment config (default).
+        :return: The server response.
+        :rtype: str
+        """
+        from connect.resources.base import ApiClient
+
+        list_dict = []
+        for _ in self.params:
+            list_dict.append(_.__dict__ if isinstance(_, Param) else _)
+
+        client = ApiClient(config, base_path=self.id)
+        response, _ = client.put(json={'params': list_dict})
+        return response

@@ -5,11 +5,13 @@
 
 import datetime
 
+from connect.logger import function_log
+from connect.models import Param
+from connect.models.schemas import FulfillmentSchema
 from .asset import Asset
 from .base import BaseModel
 from .conversation import Conversation
 from .marketplace import Contract, Marketplace
-from connect.models.schemas import FulfillmentSchema
 
 
 class Fulfillment(BaseModel):
@@ -102,8 +104,7 @@ class Fulfillment(BaseModel):
             self.asset.items))
 
     def needs_migration(self, migration_key='migration_info'):
-        """
-        Indicates whether the request contains data to be migrated from a legacy product.
+        """ Indicates whether the request contains data to be migrated from a legacy product.
         Migration is performed by an external service. All you have to do for a request that
         needs migration is to skip processing by raising a
         :py:class:`connect.exceptions.SkipRequest` exception.
@@ -135,3 +136,21 @@ class Fulfillment(BaseModel):
                 return None
         except ValueError:
             return None
+
+    @function_log
+    def update_parameters(self, config=None):
+        """ Updates the parameters of this request in the platform.
+
+        :param Config config: Configuration, or ``None`` to use the environment config (default).
+        :return: The server response.
+        :rtype: str
+        """
+        from connect.resources.base import ApiClient
+
+        list_dict = []
+        for _ in self.asset.params:
+            list_dict.append(_.__dict__ if isinstance(_, Param) else _)
+
+        client = ApiClient(config, base_path=self.id)
+        response, _ = client.put(json={'asset': {'params': list_dict}})
+        return response

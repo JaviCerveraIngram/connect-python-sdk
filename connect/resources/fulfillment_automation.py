@@ -99,8 +99,7 @@ class FulfillmentAutomation(AutomationEngine):
 
     @deprecated(deprecated_in='16.0', details='Use ``TierConfig.get`` instead.')
     def get_tier_config(self, tier_id, product_id):
-        """
-        Gets the specified tier config data. For example, to get Tier 1 configuration data
+        """ Gets the specified tier config data. For example, to get Tier 1 configuration data
         for one request, within the FulfillmentAutomation instance, we can do: ::
 
             self.get_tier_config(request.asset.tiers.tier1.id, request.asset.product.id)
@@ -125,6 +124,7 @@ class FulfillmentAutomation(AutomationEngine):
             return None
 
     @function_log
+    @deprecated(deprecated_in='16.1', details='Use ``Fulfillment.update_parameters`` instead.')
     def update_parameters(self, pk, params):
         """ Sends a list of Param objects to Connect for updating.
 
