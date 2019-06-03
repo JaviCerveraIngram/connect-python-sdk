@@ -194,6 +194,7 @@ class TierConfigRequest(BaseModel):
         :param Config config: Configuration, or ``None`` to use the environment config (default).
         :return: The server response.
         :rtype: str
+        :raises ServerError: Raised if any of the request parameter cannot be updated.
         """
         from connect.resources.base import ApiClient
 

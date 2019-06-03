@@ -81,6 +81,7 @@ class TierConfigAutomation(AutomationEngine):
         :param list[Param] params: List of parameters to update.
         :return: The server response.
         :rtype: str
+        :raises ServerError: Raised if any of the request parameter cannot be updated.
         """
         list_dict = []
         for _ in params:
