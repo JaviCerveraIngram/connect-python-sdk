@@ -138,8 +138,9 @@ class Fulfillment(BaseModel):
             return None
 
     @function_log
-    def update_parameters(self, config=None):
-        """ Updates the parameters of this request in the platform.
+    def update_params(self, config=None):
+        """ Updates the parameters of this request in the platform. You must have previously added
+        or updated the parameters in the object's ``asset.params`` list.
 
         :param Config config: Configuration, or ``None`` to use the environment config (default).
         :return: The server response.
@@ -153,5 +154,5 @@ class Fulfillment(BaseModel):
             list_dict.append(_.__dict__ if isinstance(_, Param) else _)
 
         client = ApiClient(config, base_path=self.id)
-        response, _ = client.put(json={'asset': {'params': list_dict}})
+        response, code = client.put(json={'asset': {'params': list_dict}})
         return response

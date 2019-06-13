@@ -124,7 +124,7 @@ class FulfillmentAutomation(AutomationEngine):
             return None
 
     @function_log
-    @deprecated(deprecated_in='16.1', details='Use ``Fulfillment.update_parameters`` instead.')
+    @deprecated(deprecated_in='16.2', details='Use ``Fulfillment.update_params`` instead.')
     def update_parameters(self, pk, params):
         """ Sends a list of Param objects to Connect for updating.
 

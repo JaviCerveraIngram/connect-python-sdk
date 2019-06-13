@@ -72,8 +72,8 @@ class TierConfigAutomation(AutomationEngine):
         return ''
 
     @function_log
-    @deprecated(deprecated_in='16.1',
-                details='Use ``TierConfigRequest.update_parameters`` instead.')
+    @deprecated(deprecated_in='16.2',
+                details='Use ``TierConfigRequest.update_params`` instead.')
     def update_parameters(self, pk, params):
         """ Sends a list of Param objects to Connect for updating.
 
