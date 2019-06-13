@@ -11,10 +11,10 @@ from .connection import Connection
 from .contact import Contact, ContactInfo, PhoneNumber
 from .conversation import Conversation, ConversationMessage
 from .event import EventInfo, Events
+from .parameters import Constraints, Param, ValueChoice
 from .fulfillment import Fulfillment
 from .hub import Hub, HubInstance, ExtIdHub, HubStats
 from .marketplace import Activation, Agreement, AgreementStats, Contract, Marketplace
-from .parameters import Constraints, Param, ValueChoice
 from .product import CustomerUiSettings, Document, DownloadLink, Item, Product, \
     ProductConfiguration, Renewal
 from .server_error_response import ServerErrorResponse
