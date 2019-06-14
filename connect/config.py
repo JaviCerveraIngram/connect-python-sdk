@@ -4,7 +4,6 @@
 # Copyright (c) 2019 Ingram Micro. All Rights Reserved.
 
 import json
-import os
 
 
 class Config(object):
@@ -28,21 +27,18 @@ class Config(object):
         # Check arguments
         if not file and not any([api_key, api_url]):
             raise ValueError('Expected file or api_key and api_url in Config initialization')
-        if products and not isinstance(products, (str, list)):
+        if products is not None and not isinstance(products, (str, list)):
             raise TypeError('Products can be string or string list. Found type '
                             + type(products).__name__)
 
         # Load config from file name
         if file:
-            if not os.path.exists(file):
-                raise IOError('No file `{}` on directory'.format(file))
-
             with open(file) as config_file:
                 configs = config_file.read()
 
             try:
                 configs = json.loads(configs)
-            except Exception as ex:
+            except ValueError as ex:
                 raise TypeError('Invalid config file `{}`\n'
                                 'ERROR: {}'.format(file, str(ex)))
 
