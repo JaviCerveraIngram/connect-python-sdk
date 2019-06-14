@@ -5,11 +5,21 @@
 
 import pytest
 
+from connect import FulfillmentAutomation, TierConfigAutomation
 from connect.exceptions import Message
 
 
-def test_deprecated_message():
-    # type: () -> None
+def test_message():
     with pytest.deprecated_call():
         # noinspection PyStatementEffect
         Message('Hello').message
+
+
+def test_fulfillment_automation():
+    with pytest.deprecated_call():
+        FulfillmentAutomation()
+
+
+def test_tier_config_automation():
+    with pytest.deprecated_call():
+        TierConfigAutomation()
