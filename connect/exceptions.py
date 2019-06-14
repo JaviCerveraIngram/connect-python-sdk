@@ -3,12 +3,8 @@
 # This file is part of the Ingram Micro Cloud Blue Connect SDK.
 # Copyright (c) 2019 Ingram Micro. All Rights Reserved.
 
-from typing import List
-
 from deprecation import deprecated
 import six
-
-from .models.parameters import Param
 
 
 class Message(Exception):
@@ -48,6 +44,7 @@ class FailRequest(Message):
 
     :param str message: Exception message.
     """
+
     def __init__(self, message=''):
         super(FailRequest, self).__init__(message or 'Request failed', 'fail')
 
@@ -59,12 +56,21 @@ class InquireRequest(Message):
     :param List[Param] params: Parameters to inquire.
     """
 
-    params = None  # type: List[Param]
-    """ (List[:py:class:`.Param`]) Parameters to inquire. """
-
     def __init__(self, message='', params=None):
-        super(InquireRequest, self).__init__(message or 'Correct user input required', 'inquire')
-        self.params = params or []
+        super(InquireRequest, self).__init__(
+            message or 'Correct user input required',
+            'inquire',
+            params or []
+        )
+
+    @property
+    def params(self):
+        """
+        :return: Parameters to inquire.
+        :rtype: List[Param]
+        """
+        # noinspection PyTypeChecker
+        return self.obj
 
 
 class SkipRequest(Message):
@@ -84,7 +90,7 @@ class ServerError(Exception):
     """
 
     def __init__(self, error):
-        super(ServerError, self).__init__(str(error), error.error_code)
+        super(ServerError, self).__init__(error.json_str, error.error_code)
 
 
 class UsageFileAction(Message):
@@ -103,7 +109,7 @@ class AcceptUsageFile(UsageFileAction):
     def __init__(self, acceptance_note):
         # type: (str) -> None
         super(AcceptUsageFile, self).__init__(
-            'Accept Response is required',
+            'Usage data is correct',
             'accept',
             {'acceptance_note': acceptance_note})
 
@@ -121,18 +127,18 @@ class DeleteUsageFile(UsageFileAction):
 
 
 class RejectUsageFile(UsageFileAction):
-    def __init__(self, message=None):
+    def __init__(self, rejection_note):
         # type: (str) -> None
-        super(RejectUsageFile, self).__init__(message or 'Accept Response is required', 'reject')
+        super(RejectUsageFile, self).__init__(
+            'Usage data is not correct',
+            'reject',
+            {'rejection_note': rejection_note})
 
 
 class SubmitUsageFile(UsageFileAction):
-    def __init__(self, rejection_note):
+    def __init__(self, message=None):
         # type: (str) -> None
-        super(SubmitUsageFile, self).__init__(
-            'Usage File Submitted',
-            'submit',
-            {'rejection_note': rejection_note})
+        super(SubmitUsageFile, self).__init__(message or 'Usage File Submitted', 'submit')
 
 
 class FileCreationError(Message):

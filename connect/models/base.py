@@ -25,13 +25,20 @@ class BaseModel(object):
             setattr(self, attr, val)
 
     @property
+    def json_str(self):
+        """
+        :return: String with the JSON representation of the model.
+        :rtype: str
+        """
+        return json.dumps(self, default=lambda o: getattr(o, '__dict__', str(o)))
+
+    @property
     def json(self):
         """
-        :return: The JSON representation of the model.
+        :return: A list or dictionary with the JSON representation of the model.
         :rtype: dict|list
         """
-        dump = json.dumps(self, default=lambda o: getattr(o, '__dict__', str(o)))
-        return json.loads(dump)
+        return json.loads(self.json_str)
 
     @classmethod
     def deserialize(cls, json_str):

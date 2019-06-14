@@ -22,10 +22,3 @@ class ServerErrorResponse(BaseModel):
 
     errors = None  # type: List[str]
     """ (List[str]) List of errors. """
-
-    def __str__(self):
-        return str({
-            'error_code': self.error_code,
-            'params': self.params,
-            'errors': self.errors,
-        })

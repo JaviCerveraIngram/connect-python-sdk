@@ -6,7 +6,8 @@
 import pytest
 
 from connect import FulfillmentAutomation, TierConfigAutomation
-from connect.exceptions import Message
+from connect.exceptions import Message, FailRequest, InquireRequest, SkipRequest
+from connect.models.exception import FulfillmentFail, FulfillmentInquire, Skip
 
 
 def test_message():
@@ -23,3 +24,9 @@ def test_fulfillment_automation():
 def test_tier_config_automation():
     with pytest.deprecated_call():
         TierConfigAutomation()
+
+
+def test_deprecated_exceptions():
+    assert isinstance(FulfillmentFail(), FailRequest)
+    assert isinstance(FulfillmentInquire(), InquireRequest)
+    assert isinstance(Skip(), SkipRequest)
