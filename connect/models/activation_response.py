@@ -20,6 +20,7 @@ class ActivationTileResponse(object):
 
     def __init__(self, markdown=''):
         try:
+            # TODO: Do we need to support this?
             self.tile = json.loads(markdown)
         except ValueError:
             self.tile = markdown or self.__class__.tile
