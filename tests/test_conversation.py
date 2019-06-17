@@ -6,21 +6,23 @@
 import datetime
 import os
 
-from mock import patch, call, Mock
+from mock import patch
 
-from connect.models import Conversation, ConversationMessage, User, Fulfillment
+from connect.models import Conversation, ConversationMessage, User
 from .common import Response, load_str
 
-conversation_contents = load_str(
-    os.path.join(os.path.dirname(__file__), 'data', 'conversation.json'))
 
-add_message_response = load_str(
-    os.path.join(os.path.dirname(__file__), 'data', 'add_message_response.json'))
+def setup_module(module):
+    module.prev_dir = os.getcwd()
+    os.chdir(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data'))
+
+
+def teardown_module(module):
+    os.chdir(module.prev_dir)
 
 
 def test_conversation_attributes():
-    # type: () -> None
-    conversation = Conversation.deserialize(conversation_contents)
+    conversation = Conversation.deserialize(load_str('conversation.json'))
     assert isinstance(conversation, Conversation)
     assert conversation.id == 'CO-750-033-356'
     assert conversation.instance_id == 'LST-038-662-242'
@@ -46,12 +48,11 @@ def test_conversation_attributes():
 
 @patch('requests.post')
 def test_add_message(post_mock):
-    # type: (Mock) -> None
-    post_mock.return_value = Response(True, add_message_response, 200)
+    post_mock.return_value = Response(True, load_str('add_message_response.json'), 200)
 
     text = 'Hi, please see my listing request'
 
-    conversation = Conversation.deserialize(conversation_contents)
+    conversation = Conversation.deserialize(load_str('conversation.json'))
     message = conversation.add_message(text)
 
     post_mock.assert_called_with(
@@ -67,72 +68,3 @@ def test_add_message(post_mock):
     assert message.creator.id == 'UR-000-000-000'
     assert message.creator.name == 'Some User'
     assert message.text == text
-
-
-@patch('requests.get')
-def test_get_conversation_ok(get_mock):
-    # type: (Mock) -> None
-    get_mock.side_effect = [
-        Response(True, '[' + conversation_contents + ']', 200),
-        Response(True, conversation_contents, 200)
-    ]
-
-    request = Fulfillment(id='PR-0000-0000-0000')
-    conversation = request.get_conversation()
-
-    assert get_mock.call_count == 2
-    get_mock.assert_has_calls([
-        call(
-            headers={'Content-Type': 'application/json', 'Authorization': 'ApiKey XXXX:YYYYY'},
-            params={'instance_id': request.id},
-            url='http://localhost:8080/api/public/v1/conversations/'),
-        call(
-            headers={'Content-Type': 'application/json', 'Authorization': 'ApiKey XXXX:YYYYY'},
-            url='http://localhost:8080/api/public/v1/conversations/' + conversation.id)
-    ])
-
-    assert isinstance(conversation, Conversation)
-
-
-@patch('requests.get')
-def test_get_conversation_empty(get_mock):
-    # type: (Mock) -> None
-    get_mock.return_value = Response(True, '[]', 200)
-
-    request = Fulfillment(id='PR-0000-0000-0000')
-    conversation = request.get_conversation()
-
-    assert get_mock.call_count == 1
-    get_mock.assert_has_calls([
-        call(
-            headers={'Content-Type': 'application/json', 'Authorization': 'ApiKey XXXX:YYYYY'},
-            params={'instance_id': request.id},
-            url='http://localhost:8080/api/public/v1/conversations/')
-    ])
-
-    assert conversation is None
-
-
-@patch('requests.get')
-def test_get_conversation_bad_deserialize(get_mock):
-    # type: (Mock) -> None
-    get_mock.side_effect = [
-        Response(True, '[' + conversation_contents + ']', 200),
-        Response(True, '', 200)
-    ]
-
-    request = Fulfillment(id='PR-0000-0000-0000')
-    conversation = request.get_conversation()
-
-    assert get_mock.call_count == 2
-    get_mock.assert_has_calls([
-        call(
-            headers={'Content-Type': 'application/json', 'Authorization': 'ApiKey XXXX:YYYYY'},
-            params={'instance_id': request.id},
-            url='http://localhost:8080/api/public/v1/conversations/'),
-        call(
-            headers={'Content-Type': 'application/json', 'Authorization': 'ApiKey XXXX:YYYYY'},
-            url='http://localhost:8080/api/public/v1/conversations/CO-750-033-356')
-    ])
-
-    assert conversation is None

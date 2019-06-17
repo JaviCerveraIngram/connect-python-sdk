@@ -7,6 +7,7 @@ import pytest
 
 from connect import FulfillmentAutomation, TierConfigAutomation
 from connect.exceptions import Message, FailRequest, InquireRequest, SkipRequest
+# noinspection PyDeprecation
 from connect.models.exception import FulfillmentFail, FulfillmentInquire, Skip
 
 
