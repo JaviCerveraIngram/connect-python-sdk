@@ -47,7 +47,8 @@ class BaseModel(object):
         :param str json_str: String containing the JSON data to be deserialized.
         :return: An instance of the same class as the receiver of the call, or a list of instances.
         :rtype: Any|list[Any]
-        :raises TypeError: Raised if the data cannot be deserialized.
+        :raises TypeError: Raised if the JSON data cannot be deserialized.
+        :raises ValueError: Raised if the string passed is not in JSON format.
         """
         return cls.deserialize_json(json.loads(json_str))
 
