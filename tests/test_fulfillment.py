@@ -10,7 +10,7 @@ from mock import call, patch
 
 from connect.models import Fulfillment, Asset, Product, Connection, Company, Item, Param, \
     TierAccounts, TierAccount, ContactInfo, Contact, PhoneNumber, Conversation
-from tests.common import load_str, Response
+from .common import load_str, Response
 
 
 def setup_module(module):
