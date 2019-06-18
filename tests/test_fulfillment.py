@@ -23,7 +23,7 @@ def teardown_module(module):
 
 
 def test_fulfillment():
-    fulfillments = Fulfillment.deserialize(load_str('response.json'))
+    fulfillments = Fulfillment.deserialize(load_str('response_fulfillment.json'))
     assert isinstance(fulfillments, list)
     assert len(fulfillments) == 1
     fulfillment = fulfillments[0]
@@ -208,9 +208,10 @@ def test_fulfillment_get_conversation_empty(get_mock):
     assert get_mock.call_count == 1
     get_mock.assert_has_calls([
         call(
+            url='http://localhost:8080/api/public/v1/conversations/',
             headers={'Content-Type': 'application/json', 'Authorization': 'ApiKey XXXX:YYYYY'},
-            params={'instance_id': request.id},
-            url='http://localhost:8080/api/public/v1/conversations/')
+            params={'instance_id': request.id}
+        )
     ])
 
     assert conversation is None
@@ -229,12 +230,12 @@ def test_fulfillment_get_conversation_bad_deserialize(get_mock):
     assert get_mock.call_count == 2
     get_mock.assert_has_calls([
         call(
+            url='http://localhost:8080/api/public/v1/conversations/',
             headers={'Content-Type': 'application/json', 'Authorization': 'ApiKey XXXX:YYYYY'},
-            params={'instance_id': request.id},
-            url='http://localhost:8080/api/public/v1/conversations/'),
+            params={'instance_id': request.id}),
         call(
-            headers={'Content-Type': 'application/json', 'Authorization': 'ApiKey XXXX:YYYYY'},
-            url='http://localhost:8080/api/public/v1/conversations/CO-750-033-356')
+            url='http://localhost:8080/api/public/v1/conversations/CO-750-033-356',
+            headers={'Content-Type': 'application/json', 'Authorization': 'ApiKey XXXX:YYYYY'})
     ])
 
     assert conversation is None

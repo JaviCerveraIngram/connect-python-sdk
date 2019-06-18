@@ -8,11 +8,7 @@ import os
 from mock import patch
 
 from connect.models import TierConfig, Param, TierConfigRequest
-from .common import Response, load_str
-
-
-def _get_response_tier_config_request(*_, **__):
-    return Response(ok=True, text=load_str('response_tier_config_request.json'), status_code=200)
+from .common import Response, load_str, get_response_tier_config_request
 
 
 def setup_module(module):
@@ -26,7 +22,7 @@ def teardown_module(module):
 
 @patch('requests.get')
 def test_get(get_mock):
-    get_mock.return_value = _get_response_tier_config_request()
+    get_mock.return_value = get_response_tier_config_request()
 
     tier_config = TierConfig.get('tier_id', 'product_id')
     assert isinstance(tier_config, TierConfig)

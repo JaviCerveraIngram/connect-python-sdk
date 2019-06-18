@@ -68,17 +68,17 @@ class FulfillmentAutomation(AutomationEngine):
 
             if isinstance(process_result, ActivationTileResponse):
                 message = 'Activated using custom activation tile.'
-                approved = self.approve(request.id, {'activation_tile': process_result.tile})
+                result = self.approve(request.id, {'activation_tile': process_result.tile})
             elif isinstance(process_result, ActivationTemplateResponse):
                 message = 'Activated using template {}.'.format(process_result.template_id)
-                approved = self.approve(request.id, {'template_id': process_result.template_id})
+                result = self.approve(request.id, {'template_id': process_result.template_id})
             else:
                 # We should not get here
-                message = ''
-                approved = ''
+                message = process_result
+                result = process_result
 
             self._update_conversation_if_exists(conversation, request.id, message)
-            return approved
+            return result
 
         except InquireRequest as inquire:
             self.update_parameters(request.id, inquire.params)
@@ -148,6 +148,6 @@ class FulfillmentAutomation(AutomationEngine):
         if conversation:
             try:
                 conversation.add_message(str(obj))
-            except TypeError as ex:
+            except (TypeError, ValueError) as ex:
                 logger.error('Error updating conversation for request {}: {}'
                              .format(request_id, ex))

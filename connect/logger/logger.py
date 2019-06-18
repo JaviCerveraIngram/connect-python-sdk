@@ -19,7 +19,7 @@ logger = logging.getLogger()
 def function_log(func):
     @wraps(func)
     def decorator(self, *args, **kwargs):
-        logger.info('Entering: %s', func.__name__)
+        logger.info('Entering: {}'.format(func.__name__))
         logger.debug('Function params: {} {}'.format(args, kwargs))
 
         result = func(self, *args, **kwargs)
