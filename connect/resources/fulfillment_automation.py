@@ -97,6 +97,14 @@ class FulfillmentAutomation(AutomationEngine):
             self._update_conversation_if_exists(conversation, request.id, skip)
             return skip.code
 
+        except NotImplementedError:
+            raise
+
+        except Exception as ex:
+            logger.warning('Skipping request {} because an exception was raised: {}'
+                           .format(request.id, ex))
+            return ''
+
     @deprecated(deprecated_in='16.0', details='Use ``TierConfig.get`` instead.')
     def get_tier_config(self, tier_id, product_id):
         """
@@ -105,7 +113,7 @@ class FulfillmentAutomation(AutomationEngine):
 
             self.get_tier_config(request.asset.tiers.tier1.id, request.asset.product.id)
 
-        :param str tier_id: Id of the requested Tier Config.
+        :param str tier_id: Account Id of the requested Tier Config (id with TA prefix).
         :param str product_id: Id of the product.
         :return: The requested Tier Config, or ``None`` if it was not found.
         :rtype: Optional[TierConfig]

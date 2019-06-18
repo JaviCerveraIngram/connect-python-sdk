@@ -39,8 +39,8 @@ def test_get(get_mock):
             'Authorization': 'ApiKey XXXX:YYYYY'},
         params={
             'status': 'approved',
-            'configuration.product.id': 'product_id',
-            'configuration.account.id': 'tier_id'})
+            'configuration__product__id': 'product_id',
+            'configuration__account__id': 'tier_id'})
 
     get_mock.return_value = Response(ok=True, text='[]', status_code=200)
     assert not TierConfig.get('', '')
