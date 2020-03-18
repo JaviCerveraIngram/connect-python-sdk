@@ -693,14 +693,23 @@ class UsageListingSchema(BaseSchema):
 
 
 class UsageRecordSchema(BaseSchema):
-    usage_record_id = fields.Str()
+    record_id = fields.Str()
+    record_note = fields.Str()
     item_search_criteria = fields.Str()
     item_search_value = fields.Str()
+    amount = fields.Float()
     quantity = fields.Int()
     start_time_utc = fields.Str()
     end_time_utc = fields.Str()
     asset_search_criteria = fields.Str()
     asset_search_value = fields.Str()
+    item_name = fields.Str()
+    item_mpn = fields.Str()
+    item_unit = fields.Str()
+    item_precision = fields.Str()
+    category_id = fields.Str()
+    asset_recon_id = fields.Str()
+    tier = fields.Int()
 
     @post_load
     def make_object(self, data):

@@ -1,5 +1,9 @@
 # Connect SDK Changes History
 
+## v19.0
+
+* Feature: Added new UsageRecord properties.
+
 ## v18.1
 
 * Feature: Allow masking of specified log fields.

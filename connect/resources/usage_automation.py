@@ -139,33 +139,51 @@ class UsageAutomation(AutomationEngine):
     def _upload_usage_records(self, usage_file, usage_records):
         # type: (UsageFile, List[UsageRecord]) -> None
         # TODO: Using xslx mechanism till usage records json api is available
-        book = self._create_spreadsheet(usage_records)
+        book = self._create_spreadsheet(usage_records, usage_file.id)
         self._upload_spreadsheet(usage_file, book)
 
     @staticmethod
-    def _create_spreadsheet(usage_records):
-        # type: (List[UsageRecord]) -> openpyxl.Workbook
+    def _create_spreadsheet(usage_records, file_id):
+        # type: (List[UsageRecord], str) -> openpyxl.Workbook
         book = openpyxl.Workbook()
         sheet = book.active
         sheet.title = 'usage_records'
         sheet['A1'] = 'record_id'
-        sheet['B1'] = 'item_search_criteria'
-        sheet['C1'] = 'item_search_value'
-        sheet['D1'] = 'quantity'
-        sheet['E1'] = 'start_time_utc'
-        sheet['F1'] = 'end_time_utc'
-        sheet['G1'] = 'asset_search_criteria'
-        sheet['H1'] = 'asset_search_value'
+        sheet['B1'] = 'record_note'
+        sheet['C1'] = 'item_search_criteria'
+        sheet['D1'] = 'item_search_value'
+        sheet['E1'] = 'amount'
+        sheet['F1'] = 'quantity'
+        sheet['G1'] = 'start_time_utc'
+        sheet['H1'] = 'end_time_utc'
+        sheet['I1'] = 'asset_search_criteria'
+        sheet['J1'] = 'asset_search_value'
+        sheet['K1'] = 'item_name'
+        sheet['L1'] = 'item_mpn'
+        sheet['M1'] = 'item_precision'
+        sheet['N1'] = 'item_unit'
+        sheet['O1'] = 'category_id'
+        sheet['P1'] = 'asset_recon_id'
+        sheet['Q1'] = 'tier'
         for index, record in enumerate(usage_records):
             row = str(index + 2)
-            sheet['A' + row] = record.usage_record_id
-            sheet['B' + row] = record.item_search_criteria
-            sheet['C' + row] = record.item_search_value
-            sheet['D' + row] = record.quantity
-            sheet['E' + row] = record.start_time_utc
-            sheet['F' + row] = record.end_time_utc
-            sheet['G' + row] = record.asset_search_criteria
-            sheet['H' + row] = record.asset_search_value
+            sheet['A' + row] = record.record_id or (file_id + '_record_' + str(index))
+            sheet['B' + row] = record.record_note or ''
+            sheet['C' + row] = record.item_search_criteria or ''
+            sheet['D' + row] = record.item_search_value or ''
+            sheet['E' + row] = record.amount or ''
+            sheet['F' + row] = record.quantity or ''
+            sheet['G' + row] = record.start_time_utc or ''
+            sheet['H' + row] = record.end_time_utc or ''
+            sheet['I' + row] = record.asset_search_criteria or ''
+            sheet['J' + row] = record.asset_search_value or ''
+            sheet['K' + row] = record.item_name or ''
+            sheet['L' + row] = record.item_mpn or ''
+            sheet['M' + row] = record.item_precision or ''
+            sheet['N' + row] = record.item_unit or ''
+            sheet['O' + row] = record.category_id or 'generic_category'
+            sheet['P' + row] = record.asset_recon_id or ''
+            sheet['Q' + row] = record.tier or ''
         return book
 
     def _upload_spreadsheet(self, usage_file, spreadsheet):
