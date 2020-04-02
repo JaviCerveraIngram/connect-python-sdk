@@ -42,7 +42,7 @@ class UsageRecord(BaseModel):
     """ (str) Macro that will be used to find out respective asset belonging to the product. """
 
     asset_search_value = None  # type: str
-    """ (str) alue that will be used to identify Asset belonging to the product with the help of
+    """ (str) Value that will be used to identify Asset belonging to the product with the help of
     filter specified on 'asset_search_criteria'. """
 
     item_name = None  # type: str

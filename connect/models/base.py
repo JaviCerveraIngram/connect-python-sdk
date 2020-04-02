@@ -30,8 +30,7 @@ class BaseModel(object):
         :return: The JSON representation of the model.
         :rtype: dict|list
         """
-        dump = json.dumps(self, default=lambda o: getattr(o, '__dict__', str(o)))
-        return json.loads(dump)
+        return json.loads(self.__class__._schema.dumps(self).data)
 
     @classmethod
     def deserialize(cls, json_str):

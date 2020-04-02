@@ -226,7 +226,7 @@ class ExtIdHubSchema(BaseSchema):
 
 
 class RenewalSchema(BaseSchema):
-    from_ = fields.DateTime(load_from='from')
+    from_ = fields.DateTime(load_from='from', dump_to='from')
     to = fields.DateTime()
     period_delta = fields.Int()
     period_uom = fields.Str()
